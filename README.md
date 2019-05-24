@@ -1,4 +1,4 @@
-# Title
+# Red Riding Hood Adventures
 short description
 
 ## Instructions
