@@ -1,0 +1,118 @@
+import os
+import arcade
+import random
+import math
+
+file_path = os.path.dirname(os.path.abspath(__file__))
+os.chdir(file_path)
+
+WIDTH = 640
+HEIGHT = 480
+CHARACTER_SCALING = 0.05
+PLAYER_MOVEMENT_SPEED = 5
+
+player_sprite = arcade.Sprite('images/girl.png', CHARACTER_SCALING, center_x=WIDTH/6, center_y=HEIGHT/4,)
+
+
+apples = arcade.ShapeElementList()
+logs = arcade.ShapeElementList()
+
+apples_x_positions = []
+apples_y_positions = []
+logs_x_positions = []
+logs_y_positions = []
+
+
+def logs():
+    global logs
+    global logs_y_positions
+    global logs_x_positions
+
+
+for _ in range(5):
+    x = random.randrange(0, WIDTH)
+    y = random.randrange(HEIGHT, HEIGHT*2)
+    logs_x_positions.append(x)
+    logs_y_positions.append(y)
+
+
+def apples():
+    global apples
+    global apples_y_positions
+    global apples_x_positions
+
+
+for _ in range(20):
+    x = random.randrange(0, WIDTH)
+    y = random.randrange(HEIGHT, HEIGHT*2)
+    apples_x_positions.append(x)
+    apples_y_positions.append(y)
+
+
+def setup():
+    arcade.open_window(WIDTH, HEIGHT, "My Arcade Game")
+    arcade.set_background_color(arcade.color.LIGHT_GREEN)
+    arcade.schedule(update, 1/60)
+
+    # Override arcade window methods
+    window = arcade.get_window()
+    window.on_draw = on_draw
+    window.on_key_press = on_key_press
+    window.on_key_release = on_key_release
+    arcade.run()
+    apples()
+    logs()
+
+def update(delta_time):
+    # By default, adds the sprite's speed to its location
+    # creating movement.
+    player_sprite.update()
+    for index in range(len(apples_y_positions)):
+        apples_y_positions[index] -= 2
+
+        if apples_y_positions[index] < 0:
+            apples_y_positions[index] = random.randrange(HEIGHT, HEIGHT+50)
+            apples_x_positions[index] = random.randrange(0, WIDTH)
+
+    for index in range(len(logs_y_positions)):
+        logs_y_positions[index] -= 2
+
+        if logs_y_positions[index] < 0:
+            logs_y_positions[index] = random.randrange(HEIGHT, HEIGHT+50)
+            logs_x_positions[index] = random.randrange(0, WIDTH)
+
+
+def on_draw():
+    arcade.start_render()
+    # Draw in here...
+    for x, y in zip(apples_x_positions, apples_y_positions):
+        arcade.draw_circle_filled(x, y, 7, arcade.color.PASTEL_RED)
+
+    for x, y in zip(logs_x_positions, logs_y_positions):
+        arcade.draw_rectangle_filled(x, y, 75, 25, arcade.color.SANDY_BROWN)
+
+    player_sprite.draw()
+
+
+def on_key_press(key, modifiers):
+    if key == arcade.key.LEFT:
+        player_sprite.change_x = -PLAYER_MOVEMENT_SPEED
+
+    elif key == arcade.key.RIGHT:
+        player_sprite.change_x = PLAYER_MOVEMENT_SPEED
+
+
+def on_key_release(key, modifiers):
+    if key == arcade.key.LEFT:
+        player_sprite.change_x = 0
+
+    elif key == arcade.key.RIGHT:
+        player_sprite.change_x = 0
+
+
+def on_mouse_press(x, y, button, modifiers):
+    pass
+
+
+if __name__ == '__main__':
+    setup()
