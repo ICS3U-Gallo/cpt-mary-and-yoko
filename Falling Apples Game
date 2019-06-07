@@ -4,24 +4,41 @@ import arcade
 WIDTH = 1000
 HEIGHT = 650
 
-timer = 30.0
+player_x = WIDTH/2
+player_y = HEIGHT/2
 
-# apple_pic = arcade.Sprite('Pictures/Comp_sci_images/apples.jfif', center_x=WIDTH/2, center_y=HEIGHT/2, scale=0.5)
+timer = 0.0
 
-apple_x_coord_list = []
-apple_y_coord_list = []
-apples_list = []
+apples_in_trees_list = []
+fallen_apples_list = []
+
+fallen_apples_counter = 0
+
+# controls
+up_is_being_pressed = False
+down_is_being_pressed = False
+left_pressed = False
+right_pressed = False
 
 
-def apples():
+def stopwatch():
+    minutes = int(timer) // 60
+    seconds = int(timer) % 60
+    output = f"Time: {minutes:02d}:{seconds:02d}"
+    arcade.draw_text(output, 300, 300, arcade.color.BLACK, 30)
+
+
+def create_apples():
     for _ in range(6):
-        apple_x_coord = random.randint(5, 998);
-        apple_x_coord_list.append(apple_x_coord)
-        apple_y_coord = random.randint(400, 640);
-        apple_y_coord_list.append(apple_y_coord)
+        x = random.randint(5, 998)
+        y = random.randint(400, 640)
+        apples_in_trees_list.append([x, y])
+    print(apples_in_trees_list)
 
-    print(apple_x_coord_list)
-    print(apple_y_coord_list)
+
+def apple_falling():
+    global fallen_apples_counter
+    apples_in_trees_list[0][1] 
 
 
 def setup():
@@ -36,39 +53,63 @@ def setup():
     window.on_key_release = on_key_release
     window.on_mouse_press = on_mouse_press
 
-    apples()
+    create_apples()
     arcade.run()
 
 
 def update(delta_time):
-    random_apple_location = random.randint(0, 5)
-    apple_y_coord_list[random_apple_location] -= 10
+    global timer, player_y, player_x, up_is_being_pressed, down_is_being_pressed
+    if up_is_being_pressed:
+        player_y += 5
+    elif down_is_being_pressed:
+        player_y -= 5
+
+    if left_pressed:
+        player_x -= 5
+    elif right_pressed:
+        player_x += 5
+    stopwatch()
+    timer += delta_time
+
+    #apple_falling()
 
 
 def on_draw():
+    global apple
     arcade.start_render()
-    minutes = int(timer) // 60
-    seconds = int(timer) % 60
-    output = f"Time: {minutes:02d}:{seconds:02d}"
-    print(output)
+    stopwatch()
 
-    # Draw in here...
-    arcade.draw_circle_filled(100, 100, 25, arcade.color.BLUE)
-    x = 0
-    y = 0
-    for _ in range(6):
-        arcade.draw_circle_filled(apple_x_coord_list[x], apple_y_coord_list[y], 20, arcade.color.RED)
-        x += 1
-        y += 1
+    # Basket
+    arcade.draw_circle_filled(player_x, player_y, 25, arcade.color.BLUE)
 
+    # 6 Apples
+    for apple in apples_in_trees_list:
+        arcade.draw_circle_filled(apple[0], apple[1], 20, arcade.color.RED)
 
 
 def on_key_press(key, modifiers):
-    pass
+    global player_y, player_x, up_is_being_pressed, down_is_being_pressed, left_pressed, right_pressed
+    if key == arcade.key.UP:
+        up_is_being_pressed = True
+    elif key == arcade.key.DOWN:
+        down_is_being_pressed = True
+    if key == arcade.key.LEFT:
+        left_pressed = True
+    elif key == arcade.key.RIGHT:
+        right_pressed = True
 
 
 def on_key_release(key, modifiers):
-    pass
+    global player_y, player_x, up_is_being_pressed, down_is_being_pressed, left_pressed, right_pressed
+    if key == arcade.key.UP:
+        up_is_being_pressed = False
+    elif key == arcade.key.DOWN:
+        down_is_being_pressed = False
+    if key == arcade.key.LEFT:
+        left_pressed = False
+    elif key == arcade.key.RIGHT:
+        right_pressed = False
+
 
 
 def on_mouse_press(x, y, button, modifiers):
