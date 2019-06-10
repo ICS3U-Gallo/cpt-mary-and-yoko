@@ -2,47 +2,61 @@ import os
 import arcade
 import random
 
-WIDTH = 640
-HEIGHT = 480
-CHARACTER_SCALING = 0.05
+file_path = os.path.dirname(os.path.abspath(__file__))
+os.chdir(file_path)
+
+WIDTH = 1000
+HEIGHT = 650
+CHARACTER_SCALING = 0.08
+GRAVITY = 1
 PLAYER_MOVEMENT_SPEED = 5
+COIN_COUNT = 50
+apple_Scale = 0.03
+log_Scale = 0.2
+pond_scale = 0.2
 
 player_sprite = arcade.Sprite('images/girl.png', CHARACTER_SCALING, center_x=WIDTH/6, center_y=HEIGHT/4,)
 
 
-apples = arcade.ShapeElementList()
-logs = arcade.ShapeElementList()
+apples = arcade.SpriteList()
+logs = arcade.SpriteList()
+pond = arcade.SpriteList()
+
 
 apples_x_positions = []
 apples_y_positions = []
 logs_x_positions = []
 logs_y_positions = []
+pond_x_positions = []
+pond_y_positions = []
 
 
-def logs():
+def positions():
+    for _ in range(3):
+        x = random.randrange(0, WIDTH)
+        y = random.randrange(HEIGHT, HEIGHT * 2)
+        pond_x_positions.append(x)
+        pond_y_positions.append(y)
+
     global logs
     global logs_y_positions
     global logs_x_positions
 
+    for _ in range(1):
+        x = random.randrange(0, WIDTH)
+        y = random.randrange(HEIGHT, HEIGHT * 2)
+        logs_x_positions.append(x)
+        logs_y_positions.append(y)
 
-for _ in range(5):
-    x = random.randrange(0, WIDTH)
-    y = random.randrange(HEIGHT, HEIGHT*2)
-    logs_x_positions.append(x)
-    logs_y_positions.append(y)
-
-
-def apples():
     global apples
     global apples_y_positions
     global apples_x_positions
 
-
-for _ in range(20):
-    x = random.randrange(0, WIDTH)
-    y = random.randrange(HEIGHT, HEIGHT*2)
-    apples_x_positions.append(x)
-    apples_y_positions.append(y)
+    for _ in range(20):
+        x = random.randrange(0, WIDTH)
+        y = random.randrange(HEIGHT, HEIGHT * 2)
+        apples_x_positions.append(x)
+        apples_y_positions.append(y)
 
 
 def setup():
@@ -52,12 +66,12 @@ def setup():
 
     # Override arcade window methods
     window = arcade.get_window()
+    positions()
     window.on_draw = on_draw
     window.on_key_press = on_key_press
     window.on_key_release = on_key_release
     arcade.run()
-    apples()
-    logs()
+
 
 def update(delta_time):
     # By default, adds the sprite's speed to its location
@@ -77,16 +91,28 @@ def update(delta_time):
             logs_y_positions[index] = random.randrange(HEIGHT, HEIGHT+50)
             logs_x_positions[index] = random.randrange(0, WIDTH)
 
+    for index in range(len(pond_y_positions)):
+        pond_y_positions[index] -= 2
+
+        if pond_y_positions[index] < 0:
+            pond_y_positions[index] = random.randrange(HEIGHT, HEIGHT+50)
+            pond_x_positions[index] = random.randrange(0, WIDTH)
+
 
 def on_draw():
     arcade.start_render()
     # Draw in here...
+    for x, y in zip(pond_x_positions, pond_y_positions):
+        pond = arcade.Sprite('images/pond.png', pond_scale, center_y=y, center_x=x)
+        pond.draw()
+
     for x, y in zip(apples_x_positions, apples_y_positions):
-        arcade.draw_circle_filled(x, y, 7, arcade.color.PASTEL_RED)
+        apples = arcade.Sprite('images/845418.png', apple_Scale, center_y=y, center_x=x)
+        apples.draw()
 
     for x, y in zip(logs_x_positions, logs_y_positions):
-        arcade.draw_rectangle_filled(x, y, 75, 25, arcade.color.SANDY_BROWN)
-
+        logs = arcade.Sprite('images/logs.png', log_Scale, center_y=y, center_x=x)
+        logs.draw()
     player_sprite.draw()
 
 
