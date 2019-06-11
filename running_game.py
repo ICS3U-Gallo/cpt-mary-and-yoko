@@ -8,9 +8,7 @@ os.chdir(file_path)
 WIDTH = 1000
 HEIGHT = 650
 CHARACTER_SCALING = 0.08
-GRAVITY = 1
 PLAYER_MOVEMENT_SPEED = 5
-COIN_COUNT = 50
 apple_Scale = 0.03
 log_Scale = 0.2
 pond_scale = 0.2
