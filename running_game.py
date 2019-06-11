@@ -54,7 +54,6 @@ def setup():
     arcade.set_background_color(arcade.color.LIGHT_GREEN)
     arcade.schedule(update, 1/60)
 
-    # Override arcade window methods
     window = arcade.get_window()
     positions()
     window.on_draw = on_draw
@@ -64,9 +63,6 @@ def setup():
 
 
 def update(delta_time):
-    score = 0
-    # By default, adds the sprite's speed to its location
-    # creating movement.
     player_sprite.update()
     for index in range(len(apples_y_positions)):
         apples_y_positions[index] -= 2
