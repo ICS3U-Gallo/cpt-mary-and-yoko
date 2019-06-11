@@ -36,19 +36,11 @@ def positions():
         pond_x_positions.append(x)
         pond_y_positions.append(y)
 
-    global logs
-    global logs_y_positions
-    global logs_x_positions
-
     for _ in range(1):
         x = random.randrange(0, WIDTH)
         y = random.randrange(HEIGHT, HEIGHT * 2)
         logs_x_positions.append(x)
         logs_y_positions.append(y)
-
-    global apples
-    global apples_y_positions
-    global apples_x_positions
 
     for _ in range(20):
         x = random.randrange(0, WIDTH)
@@ -72,6 +64,7 @@ def setup():
 
 
 def update(delta_time):
+    score = 0
     # By default, adds the sprite's speed to its location
     # creating movement.
     player_sprite.update()
@@ -95,7 +88,6 @@ def update(delta_time):
         if pond_y_positions[index] < 0:
             pond_y_positions[index] = random.randrange(HEIGHT, HEIGHT+50)
             pond_x_positions[index] = random.randrange(0, WIDTH)
-
 
 def on_draw():
     arcade.start_render()
