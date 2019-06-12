@@ -7,6 +7,8 @@ HEIGHT = 650
 player_x = WIDTH/2
 player_y = HEIGHT/2
 
+apple_sprite = arcade.Sprite('images/apple.png', center_x=WIDTH/2, center_y=HEIGHT/2, scale=0.2)
+
 timer = 0.0
 
 apples_in_trees_list = []
@@ -75,7 +77,21 @@ def catch_apple():
         apples_in_trees_list[i][0] = player_x
         apples_in_trees_list[i][1] = player_y
 
-    #print(apple_caught_counter)
+    print(apple_caught_counter)
+
+
+def add_to_fallen_apples_list():
+    global fallen_apples_counter, i
+    try:
+        if apples_in_trees_list[i][1] < 0:
+            apples_in_trees_list.pop(i)
+            fallen_apples_list.append(i)
+        elif apples_in_trees_list[i][1] == player_y and apples_in_trees_list[i][0] == player_x:
+            apples_in_trees_list.pop(i)
+            fallen_apples_list.append(i)
+    except IndexError:
+        pass
+    print(fallen_apples_list)
 
 
 def on_draw():
@@ -138,9 +154,9 @@ def update(delta_time):
     timer += delta_time
 
     apple_falling()
-    apple_counter()
-    print(apples_in_trees_list[0][1])
     catch_apple()
+    apple_counter()
+    add_to_fallen_apples_list()
 
 
 def setup():
