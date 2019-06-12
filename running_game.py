@@ -12,42 +12,39 @@ PLAYER_MOVEMENT_SPEED = 5
 apple_Scale = 0.03
 log_Scale = 0.2
 pond_scale = 0.2
-
+score = 0
 player_sprite = arcade.Sprite('images/girl.png', CHARACTER_SCALING, center_x=WIDTH/6, center_y=HEIGHT/4,)
 
 
 apples = arcade.SpriteList()
 logs = arcade.SpriteList()
-pond = arcade.SpriteList()
-
-
-apples_x_positions = []
-apples_y_positions = []
-logs_x_positions = []
-logs_y_positions = []
-pond_x_positions = []
-pond_y_positions = []
+ponds = arcade.SpriteList()
 
 
 def positions():
-    for _ in range(3):
-        x = random.randrange(0, WIDTH)
-        y = random.randrange(HEIGHT, HEIGHT * 2)
-        pond_x_positions.append(x)
-        pond_y_positions.append(y)
+    global score
+    for i in range(3):
+        pond = arcade.Sprite('images/pond.png', pond_scale)
+        pond.center_x = random.randrange(WIDTH)
+        pond.center_y = random.randrange(HEIGHT)
+        ponds.append(pond)
 
-    for _ in range(1):
-        x = random.randrange(0, WIDTH)
-        y = random.randrange(HEIGHT, HEIGHT * 2)
-        logs_x_positions.append(x)
-        logs_y_positions.append(y)
+    for i in range(5):
+        log = arcade.Sprite('images/logs.png', log_Scale)
+        log.center_x = random.randrange(WIDTH)
+        log.center_y = random.randrange(HEIGHT)
+        logs.append(log)
 
-    for _ in range(20):
-        x = random.randrange(0, WIDTH)
-        y = random.randrange(HEIGHT, HEIGHT * 2)
-        apples_x_positions.append(x)
-        apples_y_positions.append(y)
+    for i in range(50):
+        apple = arcade.Sprite('images/845418.png', apple_Scale)
+        apple.center_x = random.randrange(WIDTH)
+        apple.center_y = random.randrange(HEIGHT)
+        apples.append(apple)
 
+    for apple in apples:
+        if apple.center_y == 0:
+            apple.center_y = random.randrange(HEIGHT)
+            apple.center_x = random.randrange(WIDTH)
 
 def setup():
     arcade.open_window(WIDTH, HEIGHT, "My Arcade Game")
@@ -62,43 +59,45 @@ def setup():
     arcade.run()
 
 
+
 def update(delta_time):
     player_sprite.update()
-    for index in range(len(apples_y_positions)):
-        apples_y_positions[index] -= 2
 
-        if apples_y_positions[index] < 0:
-            apples_y_positions[index] = random.randrange(HEIGHT, HEIGHT+50)
-            apples_x_positions[index] = random.randrange(0, WIDTH)
+    for apple in apples:
+        apple.center_y -= 2
 
-    for index in range(len(logs_y_positions)):
-        logs_y_positions[index] -= 2
 
-        if logs_y_positions[index] < 0:
-            logs_y_positions[index] = random.randrange(HEIGHT, HEIGHT+50)
-            logs_x_positions[index] = random.randrange(0, WIDTH)
+    for log in logs:
+        log.center_y -= 2
 
-    for index in range(len(pond_y_positions)):
-        pond_y_positions[index] -= 2
+    for pond in ponds:
+        pond.center_y -=2
 
-        if pond_y_positions[index] < 0:
-            pond_y_positions[index] = random.randrange(HEIGHT, HEIGHT+50)
-            pond_x_positions[index] = random.randrange(0, WIDTH)
+    global score
+    apples_list = arcade.check_for_collision_with_list(player_sprite, apples)
+    for apple in apples_list:
+        apple.kill()
+        score += 1
+
+    logs_list = arcade.check_for_collision_with_list(player_sprite, logs)
+    for log in logs_list:
+        log.kill()
+        score -=1
+
+
+    print(score)
 
 def on_draw():
     arcade.start_render()
     # Draw in here...
-    for x, y in zip(pond_x_positions, pond_y_positions):
-        pond = arcade.Sprite('images/pond.png', pond_scale, center_y=y, center_x=x)
-        pond.draw()
 
-    for x, y in zip(apples_x_positions, apples_y_positions):
-        apples = arcade.Sprite('images/845418.png', apple_Scale, center_y=y, center_x=x)
-        apples.draw()
+    ponds.draw()
 
-    for x, y in zip(logs_x_positions, logs_y_positions):
-        logs = arcade.Sprite('images/logs.png', log_Scale, center_y=y, center_x=x)
-        logs.draw()
+
+
+    apples.draw()
+
+    logs.draw()
     player_sprite.draw()
 
 
