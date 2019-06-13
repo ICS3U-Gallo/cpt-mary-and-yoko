@@ -41,10 +41,6 @@ def positions():
         apple.center_y = random.randrange(HEIGHT)
         apples.append(apple)
 
-    for apple in apples:
-        if apple.center_y == 0:
-            apple.center_y = random.randrange(HEIGHT)
-            apple.center_x = random.randrange(WIDTH)
 
 def setup():
     arcade.open_window(WIDTH, HEIGHT, "My Arcade Game")
@@ -66,12 +62,11 @@ def update(delta_time):
     for apple in apples:
         apple.center_y -= 2
 
-
     for log in logs:
         log.center_y -= 2
 
     for pond in ponds:
-        pond.center_y -=2
+        pond.center_y -= 2
 
     global score
     apples_list = arcade.check_for_collision_with_list(player_sprite, apples)
@@ -84,19 +79,17 @@ def update(delta_time):
         log.kill()
         score -=1
 
+    ponds_list = arcade.check_for_collision_with_list(player_sprite, ponds)
+    for _ in ponds_list:
+    
 
     print(score)
 
+
 def on_draw():
     arcade.start_render()
-    # Draw in here...
-
     ponds.draw()
-
-
-
     apples.draw()
-
     logs.draw()
     player_sprite.draw()
 
