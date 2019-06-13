@@ -11,7 +11,7 @@ CHARACTER_SCALING = 0.08
 PLAYER_MOVEMENT_SPEED = 5
 apple_Scale = 0.03
 log_Scale = 0.2
-pond_scale = 0.2
+pond_scale = 0.1
 score = 0
 player_sprite = arcade.Sprite('images/girl.png', CHARACTER_SCALING, center_x=WIDTH/6, center_y=HEIGHT/4,)
 
@@ -23,8 +23,8 @@ ponds = arcade.SpriteList()
 
 def positions():
     global score
-    for i in range(3):
-        pond = arcade.Sprite('images/pond.png', pond_scale)
+    for i in range(1):
+        pond = arcade.Sprite('images/water.png', pond_scale)
         pond.center_x = random.randrange(WIDTH)
         pond.center_y = random.randrange(HEIGHT)
         ponds.append(pond)
@@ -42,6 +42,11 @@ def positions():
         apples.append(apple)
 
 
+def reset(apple):
+    apple.center_y = random.randrange(HEIGHT + 20, HEIGHT + 100)
+    apple.center_x = random.randrange(WIDTH)
+
+
 def setup():
     arcade.open_window(WIDTH, HEIGHT, "My Arcade Game")
     arcade.set_background_color(arcade.color.LIGHT_GREEN)
@@ -55,20 +60,25 @@ def setup():
     arcade.run()
 
 
-
 def update(delta_time):
     player_sprite.update()
-
-    for apple in apples:
-        apple.center_y -= 2
-
-    for log in logs:
-        log.center_y -= 2
+    global score
 
     for pond in ponds:
         pond.center_y -= 2
+        if pond.top < 0:
+            reset(pond)
 
-    global score
+    for log in logs:
+        log.center_y -= 2
+        if log.top < 0:
+            reset(log)
+
+    for apple in apples:
+        apple.center_y -= 2
+        if apple.top < 0:
+            reset(apple)
+
     apples_list = arcade.check_for_collision_with_list(player_sprite, apples)
     for apple in apples_list:
         apple.kill()
@@ -81,7 +91,7 @@ def update(delta_time):
 
     ponds_list = arcade.check_for_collision_with_list(player_sprite, ponds)
     for _ in ponds_list:
-    
+        print("game over")
 
     print(score)
 
