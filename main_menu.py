@@ -1,6 +1,5 @@
 import arcade
 
-
 WIDTH = 1000
 HEIGHT = 650
 
@@ -8,6 +7,7 @@ current_screen = "menu"
 
 ball_x = 0
 
+# play button
 play_btn_x = 0
 play_btn_y = 1
 play_btn_width = 2
@@ -18,6 +18,7 @@ play_btn_clicked_colour = 6
 
 play_button = [WIDTH/2 - 125, HEIGHT/2, 250, 50, False, arcade.color.BRICK_RED, arcade.color.CADMIUM_RED]
 
+# instruction button
 instruction_btn_x = 0
 instruction_btn_y = 1
 instruction_btn_width = 2
@@ -48,7 +49,8 @@ def on_draw():
 
 
 def on_key_press(key, modifiers):
-    pass
+    if current_screen == "instructions":
+        pass
 
 
 def on_key_release(key, modifiers):
@@ -57,26 +59,29 @@ def on_key_release(key, modifiers):
 
 def on_mouse_press(x, y, button, modifiers):
     global current_screen
-    # Check if click happened on button1
     if current_screen == "menu":
-        if (x > play_button[play_btn_x] and x < play_button[play_btn_x] + play_button[play_btn_width] and
-                y > play_button[play_btn_y] and y < play_button[play_btn_y] + play_button[play_btn_height]):
+        # When play_button is clicked
+        if (play_button[play_btn_x] < x < play_button[play_btn_x] + play_button[play_btn_width] and
+                play_button[play_btn_y] < y < play_button[play_btn_y] + play_button[play_btn_height]):
             play_button[play_btn_clicked] = True
             #GO TO GAME
-        if (x > instruction_button[instruction_btn_x] and x < instruction_button[instruction_btn_x] + instruction_button[instruction_btn_width] and
-                y > instruction_button[instruction_btn_y] and y < instruction_button[instruction_btn_y] + instruction_button[instruction_btn_height]):
+        # When instruction_button is clicked
+        if (instruction_button[instruction_btn_x] < x < instruction_button[instruction_btn_x] + instruction_button[instruction_btn_width] and
+                instruction_button[instruction_btn_y] < y < instruction_button[instruction_btn_y] + instruction_button[
+                    instruction_btn_height]):
             instruction_button[instruction_btn_clicked] = True
+            current_screen = "instructions"
 
 
 def on_mouse_release(x, y, button, modifiers):
     global current_screen
     # When you let go of the mouse, all buttons should be set to False.
-    if play_button[play_btn_clicked] == True:
+    if play_button[play_btn_clicked]:
         #Go to game
-        pass
+        play_button[play_btn_clicked] = False
 
-    if instruction_button[instruction_btn_clicked] == True:
-        current_screen = "instructions"
+    if instruction_button[instruction_btn_clicked]:
+        instruction_button[instruction_btn_clicked] = False
 
 
 def setup():
@@ -128,13 +133,20 @@ def draw_menu():
                                       instruction_button[instruction_btn_height],
                                       color)
 
+    arcade.draw_text("Main Menu", WIDTH / 2, HEIGHT / 2 + 100,
+                     arcade.color.BLACK, font_size=30, anchor_x="center")
+    arcade.draw_text("Play", WIDTH / 2, HEIGHT / 2 + 15,
+                     arcade.color.BLACK, font_size=20, anchor_x="center")
+    arcade.draw_text("Instructions", WIDTH / 2, HEIGHT / 2 - 85,
+                     arcade.color.BLACK, font_size=20, anchor_x="center")
+
 
 def draw_instructions():
     arcade.set_background_color(arcade.color.BLUE_GRAY)
     arcade.draw_text("Instructions", WIDTH/2, HEIGHT/2,
-                     arcade.color.BLACK, font_size=30, anchor_x="center")
-    arcade.draw_text("ESC to go back", WIDTH/2, HEIGHT/2-60,
-                     arcade.color.BLACK, font_size=20, anchor_x="center")
+                     arcade.color.BLACK, font_size=30)
+    arcade.draw_text("ESC to go back", WIDTH/2, HEIGHT/2,
+                     arcade.color.BLACK, font_size=20)
 
 
 def draw_play():
