@@ -19,7 +19,7 @@ BASKET_MOVEMENT_SPEED = 10
 APPLE_MOVEMENT_SPEED = 2
 
 apples_in_trees_list = arcade.SpriteList()
-fallen_apples_list = arcade.SpriteList()
+#fallen_apples_list = arcade.SpriteList()
 
 fallen_apples_counter = 0
 apple_caught_counter = 0
@@ -44,61 +44,64 @@ def create_apples():
         apples_in_trees_list.append(apple_sprite)
 
 
-def apple_counter():
-    global fallen_apples_counter, i
-    try:
-        #apple_falling()
-        falling_apple = apples_in_trees_list[i]
-        if falling_apple.center_y < 0:
-            i += 1
-            fallen_apples_counter += 1
-            falling_apple.kill()
-        # elif falling_apple.center_y == basket_sprite.center_y and falling_apple.center_x == basket_sprite.center_x:
-        #     i += 1
-        #     fallen_apples_counter += 1
-    except IndexError:
-        pass
-
-
 def apple_falling():
+    global i
     try:
         falling_apple = apples_in_trees_list[i]
         falling_apple.center_y -= APPLE_MOVEMENT_SPEED
     except IndexError:
-        pass
+        i = 0
 
 
 def catch_apple():
-    global apple_caught_counter
+    global apple_caught_counter, i
     try:
         falling_apple = apples_in_trees_list[i]
         apples_list = arcade.check_for_collision(basket_sprite, falling_apple)
         if apples_list:
             falling_apple.kill()
-            #fallen_apples_list.append(falling_apple)
             apple_caught_counter += 1
+            i += 1
+        else:
+            if falling_apple.center_y < 0:
+                falling_apple.kill()
+                i += 1
     except IndexError:
-        pass
+        i = 0
+
+
+# def apple_counter():
+#     global fallen_apples_counter, i
+#     falling_apple = apples_in_trees_list[i]
+#     if falling_apple.center_y < 0:
+#         falling_apple.kill()
+#         i += 1
+#         #fallen_apples_counter += 1
+#
+#    # print(fallen_apples_counter)
+#     elif arcade.check_for_collision(basket_sprite, falling_apple):
+#         i += 1
+#         #fallen_apples_counter += 1
+#     # print(i)
+#     # if i > 6:
+#     #     i = 0
 
 
 def apple_spawn():
-    global apple_spawn_counter, i
-    i = 0
+    global apple_spawn_counter
     create_apples()
     apple_spawn_counter += 1
 
 
 def apple_falling_speed_increase():
     global APPLE_MOVEMENT_SPEED
-    if apple_spawn_counter:
-        APPLE_MOVEMENT_SPEED += 5
+    APPLE_MOVEMENT_SPEED * 2
 
 
 def on_draw():
     arcade.start_render()
     # Timer on screen
     stopwatch()
-    #apple_counter()
 
     # 6 Apples
     for apple in apples_in_trees_list:
@@ -146,10 +149,10 @@ def update(delta_time):
 
     apple_falling()
     catch_apple()
-    apple_counter()
+    #apple_counter()
     if not apples_in_trees_list:
         apple_spawn()
-    #apple_falling_speed_increase()
+        apple_falling_speed_increase()
 
 
 def setup():
