@@ -19,7 +19,6 @@ BASKET_MOVEMENT_SPEED = 10
 APPLE_MOVEMENT_SPEED = 2
 
 apples_in_trees_list = arcade.SpriteList()
-#fallen_apples_list = arcade.SpriteList()
 
 fallen_apples_counter = 0
 apple_caught_counter = 0
@@ -70,23 +69,6 @@ def catch_apple():
         i = 0
 
 
-# def apple_counter():
-#     global fallen_apples_counter, i
-#     falling_apple = apples_in_trees_list[i]
-#     if falling_apple.center_y < 0:
-#         falling_apple.kill()
-#         i += 1
-#         #fallen_apples_counter += 1
-#
-#    # print(fallen_apples_counter)
-#     elif arcade.check_for_collision(basket_sprite, falling_apple):
-#         i += 1
-#         #fallen_apples_counter += 1
-#     # print(i)
-#     # if i > 6:
-#     #     i = 0
-
-
 def apple_spawn():
     global apple_spawn_counter
     create_apples()
@@ -95,7 +77,7 @@ def apple_spawn():
 
 def apple_falling_speed_increase():
     global APPLE_MOVEMENT_SPEED
-    APPLE_MOVEMENT_SPEED * 2
+    APPLE_MOVEMENT_SPEED += 2
 
 
 def on_draw():
@@ -149,7 +131,6 @@ def update(delta_time):
 
     apple_falling()
     catch_apple()
-    #apple_counter()
     if not apples_in_trees_list:
         apple_spawn()
         apple_falling_speed_increase()
@@ -158,6 +139,7 @@ def update(delta_time):
 def setup():
     arcade.open_window(WIDTH, HEIGHT, "My Arcade Game")
     arcade.set_background_color(arcade.color.SKY_BLUE)
+    arcade.draw_rectangle_filled(WIDTH/2, 100, WIDTH, HEIGHT/4, arcade.color.LIGHT_MOSS_GREEN)
     arcade.schedule(update, 1/60)
 
     # Override arcade window methods
