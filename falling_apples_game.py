@@ -5,6 +5,8 @@ import os
 file_path = os.path.dirname(os.path.abspath(__file__))
 os.chdir(file_path)
 
+background = arcade.load_texture('images/background.png')
+
 timer = 0.0
 
 WIDTH = 1000
@@ -15,7 +17,7 @@ basket_scale = 0.2
 
 basket_sprite = arcade.Sprite('images/basket.png', basket_scale, center_x=WIDTH/2, center_y=HEIGHT/2)
 
-BASKET_MOVEMENT_SPEED = 10
+BASKET_MOVEMENT_SPEED = 50
 APPLE_MOVEMENT_SPEED = 2
 
 apples_in_trees_list = arcade.SpriteList()
@@ -39,7 +41,7 @@ def create_apples():
     for _ in range(6):
         apple_sprite = arcade.Sprite('images/apple1.png', apple_scale)
         apple_sprite.center_x = random.randint(5, 998)
-        apple_sprite.center_y = random.randint(400, 640)
+        apple_sprite.center_y = random.randint(500, 640)
         apples_in_trees_list.append(apple_sprite)
 
 
@@ -82,6 +84,7 @@ def apple_falling_speed_increase():
 
 def on_draw():
     arcade.start_render()
+    arcade.draw_texture_rectangle(WIDTH // 2, HEIGHT // 2, WIDTH, HEIGHT, background)
     # Timer on screen
     stopwatch()
 
@@ -139,7 +142,6 @@ def update(delta_time):
 def setup():
     arcade.open_window(WIDTH, HEIGHT, "My Arcade Game")
     arcade.set_background_color(arcade.color.SKY_BLUE)
-    arcade.draw_rectangle_filled(WIDTH/2, 100, WIDTH, HEIGHT/4, arcade.color.LIGHT_MOSS_GREEN)
     arcade.schedule(update, 1/60)
 
     # Override arcade window methods
