@@ -9,13 +9,18 @@ os.chdir(file_path)
 WIDTH = 1000
 HEIGHT = 650
 
+# Start up for the stopwatch that will increase as time goes on
+timer = 0.0
+
 "Main Menu"
 # Variable for the menu screen (will have other screens assigned to it (level one and two and instructions)
 current_screen = "menu"
 
 # Uploaded background for the menu
 menu_background = arcade.load_texture('images/menu_background.jpg')
+home_background = arcade.load_texture('images/home_background.jpg')
 red_riding_sprite = arcade.Sprite('images/littleRed.png', 0.2, center_x=WIDTH/2 + 200, center_y=HEIGHT/2 - 50)
+wolf_sprite = arcade.Sprite('images/wolf.png', 0.2, center_x=WIDTH / 2 + 200, center_y=HEIGHT / 2 - 50)
 
 # play button in the menu
 play_btn_x = 0
@@ -26,18 +31,8 @@ play_btn_clicked: int = 4
 play_btn_colour = 5
 play_btn_clicked_colour = 6
 
-play_button = [WIDTH/2 - 125, HEIGHT/2, 250, 50, False, arcade.color.BRICK_RED, arcade.color.CADMIUM_RED]
+play_button = [WIDTH/2 - 125, HEIGHT/4 - 15, 250, 50, False, arcade.color.BRICK_RED, arcade.color.CADMIUM_RED]
 
-# instruction button in the menu
-instruction_btn_x = 0
-instruction_btn_y = 1
-instruction_btn_width = 2
-instruction_btn_height = 3
-instruction_btn_clicked = 4
-instruction_btn_colour = 5
-instruction_btn_clicked_colour = 6
-
-instruction_button = [WIDTH/2 - 125, HEIGHT/2 - 100, 250, 50, False, arcade.color.BRICK_RED, arcade.color.CADMIUM_RED]
 
 "Menu Functions"
 
@@ -50,21 +45,14 @@ def draw_menu():
                                       play_button[play_btn_y],
                                       play_button[play_btn_width],
                                       play_button[play_btn_height],
-                                      arcade.color.ANTIQUE_WHITE)
+                                      arcade.color.APPLE_GREEN)
 
-    # Draw instruction_button
-    arcade.draw_xywh_rectangle_filled(instruction_button[instruction_btn_x],
-                                      instruction_button[instruction_btn_y],
-                                      instruction_button[instruction_btn_width],
-                                      instruction_button[instruction_btn_height],
-                                      arcade.color.ANTIQUE_WHITE)
 
     # Texts on main menu
-    arcade.draw_text("Main Menu", WIDTH / 2, HEIGHT / 2 + 100,
+    arcade.draw_rectangle_filled(WIDTH / 2, HEIGHT / 2 + 170, 500, 70, arcade.color.LIGHT_GREEN)
+    arcade.draw_text("Red Riding Hood Adventures", WIDTH / 2, HEIGHT / 2 + 150,
                      arcade.color.BLACK, font_size=30, anchor_x="center")
-    arcade.draw_text("Play", WIDTH / 2, HEIGHT / 2 + 15,
-                     arcade.color.BLACK, font_size=20, anchor_x="center")
-    arcade.draw_text("Instructions", WIDTH / 2, HEIGHT / 2 - 85,
+    arcade.draw_text("Play", WIDTH / 2, HEIGHT / 4,
                      arcade.color.BLACK, font_size=20, anchor_x="center")
 
 
@@ -78,7 +66,8 @@ def draw_instructions():
     arcade.draw_text('''
     Level 1: Catch the falling apples for Grandma!
     1. Move the basket around with the arrow keys
-    2. 50 apples must be caught to advance to next level
+    2. 50 apples must be caught to advance 
+    to next level before 60 seconds
     3. After every 6 apples, they will fall faster every time
 
     Level 2: Red Riding Hood is on the run from the Wolf!
@@ -97,9 +86,6 @@ def draw_instructions():
 
 # Falling apples game background
 background = arcade.load_texture('images/background.png')
-
-# Start up for the stopwatch that will increase as time goes on
-timer = 0.0
 
 # Apple and basket sprite scales
 apple_scale = 0.02
@@ -134,7 +120,7 @@ def stopwatch():
     output = f"Time: {minutes:02d}:{seconds:02d}"
     arcade.draw_text(output, 50, 20, arcade.color.BLACK, 30)
 
-
+# function that creates the positions (x and y coords) of the 6 apples
 def create_apples():
     for _ in range(6):
         apple_sprite = arcade.Sprite('images/apple1.png', apple_scale)
@@ -142,7 +128,7 @@ def create_apples():
         apple_sprite.center_y = random.randint(500, 640)
         apples_in_trees_list.append(apple_sprite)
 
-
+# Allows the apples to fall one at a time according to the apple movement speed
 def apple_falling():
     global i
     try:
@@ -151,7 +137,7 @@ def apple_falling():
     except IndexError:
         i = 0
 
-
+# Allows apple to disappear once it hits the floor or when it is caught by the basket
 def catch_apple():
     global apple_caught_counter, i
     try:
@@ -168,32 +154,52 @@ def catch_apple():
     except IndexError:
         i = 0
 
-
+# Function that spawns the apples again once the 6 apples have all disappeared
 def apple_spawn():
     global apple_spawn_counter
     create_apples()
     apple_spawn_counter += 1
 
-
+# Increases falling speed of the apples after each spawn
 def apple_falling_speed_increase():
     global APPLE_MOVEMENT_SPEED
     APPLE_MOVEMENT_SPEED += 2
 
-
+# Displays the number of apples caught
 def apple_counter():
     arcade.draw_text(f"Apple Caught: {int(apple_caught_counter)}", 50, 80, arcade.color.BLACK, 30)
 
+# If 50 apples are caught, this function tells the player
+def success():
+    arcade.draw_texture_rectangle(WIDTH // 2, HEIGHT // 2, WIDTH, HEIGHT, background)
+    arcade.draw_rectangle_filled(WIDTH / 2, HEIGHT / 2, 600, 400, arcade.color.LIGHT_GREEN)
+    arcade.draw_text('''Congratulations! 
+    
+    You have caught enough 
+    apples for Red Riding Hood. 
+    However, the Wolf will be coming to 
+    chase you soon so you better run!
 
+    Press Enter to continue.''',
+                     WIDTH / 2, HEIGHT / 2, arcade.color.BLACK, font_size=20, align="center", anchor_x="center", anchor_y="center")
+
+# If player does not catch 50 apples in 60 seconds, the game is over and this function displays a message
 def falling_apples_game_over():
-    arcade.set_background_color(arcade.color.RED)
+    arcade.draw_texture_rectangle(WIDTH // 2, HEIGHT // 2, WIDTH, HEIGHT, background)
+    wolf_sprite.draw()
     arcade.draw_text('''
                     Game Over :( 
                     
-                    Press Enter to continue.''',
-                    WIDTH / 2, HEIGHT / 2, arcade.color.BLACK, font_size=20, anchor_x="center", anchor_y="center")
+                    The Wolf came and you did 
+                    not catch enough apples
+                    
+                    Press ESC to go back.''',
+                     WIDTH / 2 - 100, HEIGHT / 2 + 100, arcade.color.BLACK, font_size=20, anchor_x="center", anchor_y="center")
 
 
+# Set up variables for the second level
 "Running Game"
+
 CHARACTER_SCALING = 1
 PLAYER_MOVEMENT_SPEED = 5
 apple_Scale = 0.01
@@ -202,45 +208,49 @@ pond_scale = 0.1
 score = 0
 player_sprite = arcade.Sprite('images/girl.png', CHARACTER_SCALING, center_x=WIDTH/6, center_y=HEIGHT/4,)
 
-
+# Lists for the objects in the game
 apples = arcade.SpriteList()
 logs = arcade.SpriteList()
 ponds = arcade.SpriteList()
 
 "Running Game Functions"
 
-
+# Sets random positions (x, y coords) for the ponds
 def pond_draw():
     for i in range(1):
         pond = arcade.Sprite('images/water.png', pond_scale)
         pond.center_x = random.randint(0, WIDTH)
-        pond.center_y = random.randint(HEIGHT, HEIGHT+80)
+        pond.center_y = HEIGHT
         ponds.append(pond)
         #pond.draw()
 
+# Sets random positions (x, y coords) for the logs
 def log_draw():
     for i in range(5):
         log = arcade.Sprite('images/logs.png', log_Scale)
         log.center_x = random.randrange(WIDTH)
-        log.center_y = random.randrange(HEIGHT, HEIGHT+80)
+        log.center_y = HEIGHT
         logs.append(log)
         #log.draw()
 
+# Sets random positions (x, y coords) for the apples
 def apple_draw():
     for i in range(50):
         apple = arcade.Sprite('images/apple.jpg', apple_Scale)
         apple.center_x = random.randrange(WIDTH)
-        apple.center_y = random.randrange(HEIGHT, HEIGHT+80)
+        apple.center_y = HEIGHT
         apples.append(apple)
         #apple.draw()
 
 
+# Resets the apple's positions after it goes down the screen
 def reset(apple):
     for _ in range(50):
         apple.center_y = random.randrange(HEIGHT + 20, HEIGHT + 100)
         apple.center_x = random.randrange(WIDTH)
 
 
+# Game over function for when player touches the pond
 def draw_game_over():
     global score
     arcade.set_background_color(arcade.color.RED)
@@ -252,6 +262,16 @@ def draw_game_over():
                      arcade.color.BLACK, font_size=20, anchor_x="center")
 
 
+def draw_success_apple_run():
+    arcade.draw_texture_rectangle(WIDTH // 2, HEIGHT // 2, WIDTH, HEIGHT, home_background)
+    arcade.draw_rectangle_filled(WIDTH / 2, 20, 900, 150, arcade.color.LIGHT_GREEN)
+    red_riding_sprite.draw()
+    arcade.draw_text('''Congrats! You have successfully brought 
+    Red Riding Hood safely to Grandma's and many apples for Grandma!''', WIDTH/2, 20,
+                     arcade.color.BLACK, font_size=25, align="center", anchor_x="center")
+
+
+
 "The Merging of Level 1 and 2 + Menu"
 
 
@@ -259,7 +279,9 @@ def on_key_press(key, modifiers):
     global current_screen
     if current_screen == "instructions":
         instructions_keybinds(key, modifiers)
-            
+
+    # Falling apples game:
+    # Arrow keys for moving the basket around
     if current_screen == "play falling apples game":
         if key == arcade.key.UP:
             basket_sprite.change_y = BASKET_MOVEMENT_SPEED
@@ -269,10 +291,14 @@ def on_key_press(key, modifiers):
             basket_sprite.change_x = -BASKET_MOVEMENT_SPEED
         elif key == arcade.key.RIGHT:
             basket_sprite.change_x = BASKET_MOVEMENT_SPEED
-
+    # When falling apples game is failed, apple_game_over_keybinds(key, modifiers) called
     if current_screen == "game over falling apples":
-        apple_game_keybinds(key, modifiers)
+        apple_game_over_keybinds(key, modifiers)
 
+    if current_screen == "success falling apples":
+        apple_game_success_keybinds(key, modifiers)
+
+    #For level 2 game
     if current_screen == "running_game":
         if key == arcade.key.LEFT:
             player_sprite.change_x = -PLAYER_MOVEMENT_SPEED
@@ -286,10 +312,16 @@ def instructions_keybinds(key, modifiers):
         current_screen = "play falling apples game"
 
 
-def apple_game_keybinds(key, modifiers):
+def apple_game_over_keybinds(key, modifiers):
     global current_screen
     if key == arcade.key.ESCAPE:
         current_screen = "menu"
+
+
+def apple_game_success_keybinds(key, modifiers):
+    global current_screen
+    if key == arcade.key.ENTER:
+        current_screen = "running_game"
 
 
 def on_key_release(key, modifiers):
@@ -327,9 +359,9 @@ def on_mouse_release(x, y, button, modifiers):
 
 
 def update(delta_time):
-    global current_screen
+    global current_screen, timer
     if current_screen == "play falling apples game":
-        global timer
+
         basket_sprite.update()
         stopwatch()
         timer += delta_time
@@ -339,14 +371,17 @@ def update(delta_time):
         if not apples_in_trees_list:
             apple_spawn()
             apple_falling_speed_increase()
-        if apple_caught_counter == 10:
-            current_screen = "running_game"
-        elif apple_caught_counter < 5 and int(timer) % 60 == 5:
+        if apple_caught_counter == 2:
+            current_screen = "success falling apples"
+        elif apple_caught_counter < 5 and int(timer) % 60 == 8:
             current_screen = "game over falling apples"
 
     if current_screen == "running_game":
         player_sprite.update()
         global score, ponds
+
+        stopwatch()
+        timer += delta_time
 
         for pond in ponds:
             pond.center_y -= 1
@@ -377,6 +412,9 @@ def update(delta_time):
         for _ in ponds_list:
             #exit()
             current_screen = "game_over"
+
+        if int(timer) % 60 == 2:
+            current_screen = "success game over"
 
 
 def setup():
@@ -423,6 +461,9 @@ def on_draw():
         apple_counter()
     elif current_screen == "game over falling apples":
         falling_apples_game_over()
+    elif current_screen == "success falling apples":
+        success()
+
     if current_screen == "running_game":
         arcade.set_background_color(arcade.color.LIGHT_GREEN)
         pond_draw()
@@ -435,6 +476,8 @@ def on_draw():
         arcade.draw_text(f"Apples Caught: {int(score)}", 50, 600, arcade.color.ANTIQUE_WHITE, 30)
     elif current_screen == "game_over":
         draw_game_over()
+    elif current_screen == "success game over":
+        draw_success_apple_run()
 
 
 if __name__ == '__main__':
