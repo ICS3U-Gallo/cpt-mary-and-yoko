@@ -10,6 +10,8 @@ HEIGHT = 650
 
 "Main Menu"
 current_screen = "menu"
+menu_background = arcade.load_texture('images/menu_background.jpg')
+red_riding_sprite = arcade.Sprite('images/littleRed.png', 0.2, center_x=WIDTH/2 + 200, center_y=HEIGHT/2 - 50)
 # play button
 play_btn_x = 0
 play_btn_y = 1
@@ -247,9 +249,11 @@ def draw_game_over():
 
 
 def on_draw():
-    global player_sprite
+    global player_sprite, red_riding_sprite
     arcade.start_render()
     if current_screen == "menu":
+        arcade.draw_texture_rectangle(WIDTH // 2, HEIGHT // 2, WIDTH, HEIGHT, menu_background)
+        red_riding_sprite.draw()
         draw_menu()
     elif current_screen == "instructions":
         draw_instructions()
