@@ -214,7 +214,7 @@ def pond_draw():
     for i in range(1):
         pond = arcade.Sprite('images/water.png', pond_scale)
         pond.center_x = random.randint(0, WIDTH)
-        pond.center_y = HEIGHT
+        pond.center_y = random.randint(HEIGHT, HEIGHT+80)
         ponds.append(pond)
         #pond.draw()
 
@@ -222,7 +222,7 @@ def log_draw():
     for i in range(5):
         log = arcade.Sprite('images/logs.png', log_Scale)
         log.center_x = random.randrange(WIDTH)
-        log.center_y = HEIGHT
+        log.center_y = random.randrange(HEIGHT, HEIGHT+80)
         logs.append(log)
         #log.draw()
 
@@ -230,7 +230,7 @@ def apple_draw():
     for i in range(50):
         apple = arcade.Sprite('images/apple.jpg', apple_Scale)
         apple.center_x = random.randrange(WIDTH)
-        apple.center_y = HEIGHT
+        apple.center_y = random.randrange(HEIGHT, HEIGHT+80)
         apples.append(apple)
         #apple.draw()
 
