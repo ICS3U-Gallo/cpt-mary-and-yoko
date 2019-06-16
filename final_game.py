@@ -216,7 +216,7 @@ def positions():
         logs.append(log)
 
     for _ in range(50):
-        apple = arcade.Sprite('images/845418.png', apple_Scale)
+        apple = arcade.Sprite('images/apple1.png', apple_Scale)
         apple.center_x = random.randrange(WIDTH)
         apple.center_y = random.randrange(HEIGHT)
         apples.append(apple)
@@ -261,11 +261,12 @@ def on_draw():
     elif current_screen == "game over falling apples":
         game_over()
     elif current_screen == "running_game":
+        arcade.set_background_color(arcade.color.LIGHT_GREEN)
+        player_sprite.draw()
         ponds.draw()
         apples.draw()
         logs.draw()
-        player_sprite.draw()
-        arcade.draw_text(f"Apples Caught: {int(score)}", 50, 80, arcade.color.BLACK, 30)
+        arcade.draw_text(f"Apples Caught: {int(score)}", 50, 600, arcade.color.ANTIQUE_WHITE, 30)
     elif current_screen == "game_over":
         draw_game_over()
 
@@ -354,7 +355,7 @@ def update(delta_time):
         if not apples_in_trees_list:
             apple_spawn()
             apple_falling_speed_increase()
-        if apple_caught_counter == 3:
+        if apple_caught_counter == 1:
             current_screen = "running_game"
 
     if current_screen == "running_game":
@@ -388,7 +389,7 @@ def update(delta_time):
 
         ponds_list = arcade.check_for_collision_with_list(player_sprite, ponds)
         for _ in ponds_list:
-            exit()
+            #exit()
             current_screen = "game_over"
 
 
@@ -403,7 +404,7 @@ def setup():
     window.on_key_press = on_key_press
     window.on_key_release = on_key_release
     window.on_mouse_press = on_mouse_press
-    
+
     if current_screen == "running_game":
         positions()
 
