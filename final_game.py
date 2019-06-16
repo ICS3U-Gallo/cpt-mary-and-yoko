@@ -32,6 +32,68 @@ instruction_btn_clicked_colour = 6
 
 instruction_button = [WIDTH/2 - 125, HEIGHT/2 - 100, 250, 50, False, arcade.color.BRICK_RED, arcade.color.CADMIUM_RED]
 
+"Menu Functions"
+
+
+def draw_menu():
+    arcade.set_background_color(arcade.color.WHITE_SMOKE)
+
+    if play_button[play_btn_clicked]:
+        color = play_button[play_btn_clicked]
+    else:
+        color = play_button[play_btn_colour]
+
+        # Draw play_button
+    arcade.draw_xywh_rectangle_filled(play_button[play_btn_x],
+                                      play_button[play_btn_y],
+                                      play_button[play_btn_width],
+                                      play_button[play_btn_height],
+                                      color)
+
+    if instruction_button[instruction_btn_clicked]:
+        color = instruction_button[instruction_btn_clicked]
+    else:
+        color = instruction_button[instruction_btn_colour]
+
+    # Draw instruction_button
+    arcade.draw_xywh_rectangle_filled(instruction_button[instruction_btn_x],
+                                      instruction_button[instruction_btn_y],
+                                      instruction_button[instruction_btn_width],
+                                      instruction_button[instruction_btn_height],
+                                      color)
+
+    arcade.draw_text("Main Menu", WIDTH / 2, HEIGHT / 2 + 100,
+                     arcade.color.BLACK, font_size=30, anchor_x="center")
+    arcade.draw_text("Play", WIDTH / 2, HEIGHT / 2 + 15,
+                     arcade.color.BLACK, font_size=20, anchor_x="center")
+    arcade.draw_text("Instructions", WIDTH / 2, HEIGHT / 2 - 85,
+                     arcade.color.BLACK, font_size=20, anchor_x="center")
+
+
+def draw_instructions():
+    arcade.set_background_color(arcade.color.BLUE_GRAY)
+    arcade.draw_text("Instructions", WIDTH / 2, 600,
+                     arcade.color.BLACK, font_size=30, anchor_x="center")
+    arcade.draw_text("ESC to go back", 900, 600,
+                     arcade.color.BLACK, font_size=20, anchor_x="right")
+    arcade.draw_text('''
+    Level 1: Catch the falling apples for Grandma!
+    1. Move the basket around with the arrow keys
+    2. 50 apples must be caught to advance to next level
+    3. After every 6 apples, they will fall faster every time
+
+    Level 2: Red Riding Hood is on the run from the Wolf!
+    1. Use the arrow keys to move left and right, 
+        avoiding the obstacles.
+    2. Gain points by collecting apples
+    3. Lose points if Red Riding Hood runs into a log.
+    4. Red Riding hood will drown 
+        if she falls into the water, and the game will end.
+        
+    Press Esc anytime to return to main menu''',
+                     WIDTH / 2, HEIGHT / 2, arcade.color.BLACK, font_size=20, anchor_x="center", anchor_y="center")
+
+
 "Falling Apples Game Setup"
 
 if current_screen == "play falling apple game":
@@ -182,63 +244,6 @@ def draw_game_over():
                      arcade.color.BLACK, font_size=20, anchor_x="center")
 
 
-"Menu Functions"
-
-
-def draw_menu():
-    arcade.set_background_color(arcade.color.WHITE_SMOKE)
-
-    if play_button[play_btn_clicked]:
-        color = play_button[play_btn_clicked]
-    else:
-        color = play_button[play_btn_colour]
-
-        # Draw play_button
-    arcade.draw_xywh_rectangle_filled(play_button[play_btn_x],
-                                      play_button[play_btn_y],
-                                      play_button[play_btn_width],
-                                      play_button[play_btn_height],
-                                      color)
-
-    if instruction_button[instruction_btn_clicked]:
-        color = instruction_button[instruction_btn_clicked]
-    else:
-        color = instruction_button[instruction_btn_colour]
-
-        # Draw instruction_button
-    arcade.draw_xywh_rectangle_filled(instruction_button[instruction_btn_x],
-                                      instruction_button[instruction_btn_y],
-                                      instruction_button[instruction_btn_width],
-                                      instruction_button[instruction_btn_height],
-                                      color)
-
-    arcade.draw_text("Main Menu", WIDTH / 2, HEIGHT / 2 + 100,
-                     arcade.color.BLACK, font_size=30, anchor_x="center")
-    arcade.draw_text("Play", WIDTH / 2, HEIGHT / 2 + 15,
-                     arcade.color.BLACK, font_size=20, anchor_x="center")
-    arcade.draw_text("Instructions", WIDTH / 2, HEIGHT / 2 - 85,
-                     arcade.color.BLACK, font_size=20, anchor_x="center")
-
-
-def draw_instructions():
-    arcade.set_background_color(arcade.color.BLUE_GRAY)
-    arcade.draw_text("Instructions", WIDTH/2, HEIGHT/2,
-                     arcade.color.BLACK, font_size=30)
-    arcade.draw_text("ESC to go back", 900, 640,
-                     arcade.color.BLACK, font_size=20)
-    arcade.draw_text('''Level 1: Catch the falling apples for Grandma!
-    1. Move the basket around with the arrow keys
-    2. 50 apples must be caught to advance to next level
-    3. After every 6 apples, they will fall faster every time
-    
-    Level 2: Red Riding Hood is on the run from the Wolf!
-    1. Use the arrow keys to move left and right, avoiding the obstacles.
-    2. Gain points by collecting apples
-    3. Lose points if Red Riding Hood runs into a log.
-    4. Red Riding hood will drown if she falls into the water, and the game will end.''',
-                     WIDTH/2+250, HEIGHT/2, arcade.color.BLACK, font_size=20)
-
-
 def on_draw():
     arcade.start_render()
     if current_screen == "menu":
@@ -268,9 +273,10 @@ def on_draw():
 
 def on_key_press(key, modifiers):
     global current_screen
-    if current_screen == "instructions":
-        if key == arcade.key.ESCAPE:
-            current_screen = "menu"
+    if current_screen == "menu":
+        menu_keybinds(key, modifiers)
+    elif current_screen == "instructions":
+        instructions_keybinds(key, modifiers)
             
     if current_screen == "play falling apples game":
         if key == arcade.key.UP:
@@ -327,11 +333,29 @@ def on_mouse_release(x, y, button, modifiers):
     global current_screen
     # When you let go of the mouse, all buttons should be set to False.
     if play_button[play_btn_clicked]:
-        current_screen = "play falling apple game"
         play_button[play_btn_clicked] = False
+        current_screen = "play falling apple game"
 
     if instruction_button[instruction_btn_clicked]:
         instruction_button[instruction_btn_clicked] = False
+
+
+def menu_keybinds(key, modifiers):
+    global current_screen
+    if key == arcade.key.ESCAPE:
+        exit()
+
+
+def instructions_keybinds(key, modifiers):
+    global current_screen
+    if key == arcade.key.ESCAPE:
+        current_screen = "menu"
+
+
+def play_keybinds(key, modifiers):
+    global current_screen
+    if key == arcade.key.ESCAPE:
+        current_screen = "menu"
 
 
 def update(delta_time):
