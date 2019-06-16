@@ -32,7 +32,71 @@ instruction_btn_clicked_colour = 6
 
 instruction_button = [WIDTH/2 - 125, HEIGHT/2 - 100, 250, 50, False, arcade.color.BRICK_RED, arcade.color.CADMIUM_RED]
 
-"Falling Apples Game"
+"Menu Functions"
+
+
+def draw_menu():
+    arcade.set_background_color(arcade.color.WHITE_SMOKE)
+
+    if play_button[play_btn_clicked]:
+        color = play_button[play_btn_clicked]
+    else:
+        color = play_button[play_btn_colour]
+
+        # Draw play_button
+    arcade.draw_xywh_rectangle_filled(play_button[play_btn_x],
+                                      play_button[play_btn_y],
+                                      play_button[play_btn_width],
+                                      play_button[play_btn_height],
+                                      color)
+
+    if instruction_button[instruction_btn_clicked]:
+        color = instruction_button[instruction_btn_clicked]
+    else:
+        color = instruction_button[instruction_btn_colour]
+
+    # Draw instruction_button
+    arcade.draw_xywh_rectangle_filled(instruction_button[instruction_btn_x],
+                                      instruction_button[instruction_btn_y],
+                                      instruction_button[instruction_btn_width],
+                                      instruction_button[instruction_btn_height],
+                                      color)
+
+    arcade.draw_text("Main Menu", WIDTH / 2, HEIGHT / 2 + 100,
+                     arcade.color.BLACK, font_size=30, anchor_x="center")
+    arcade.draw_text("Play", WIDTH / 2, HEIGHT / 2 + 15,
+                     arcade.color.BLACK, font_size=20, anchor_x="center")
+    arcade.draw_text("Instructions", WIDTH / 2, HEIGHT / 2 - 85,
+                     arcade.color.BLACK, font_size=20, anchor_x="center")
+
+
+def draw_instructions():
+    arcade.set_background_color(arcade.color.BLUE_GRAY)
+    arcade.draw_text("Instructions", WIDTH / 2, 600,
+                     arcade.color.BLACK, font_size=30, anchor_x="center")
+    arcade.draw_text("ESC to go back", 900, 600,
+                     arcade.color.BLACK, font_size=20, anchor_x="right")
+    arcade.draw_text('''
+    Level 1: Catch the falling apples for Grandma!
+    1. Move the basket around with the arrow keys
+    2. 50 apples must be caught to advance to next level
+    3. After every 6 apples, they will fall faster every time
+
+    Level 2: Red Riding Hood is on the run from the Wolf!
+    1. Use the arrow keys to move left and right, 
+        avoiding the obstacles.
+    2. Gain points by collecting apples
+    3. Lose points if Red Riding Hood runs into a log.
+    4. Red Riding hood will drown 
+        if she falls into the water, and the game will end.
+        
+    Press Esc anytime to return to main menu''',
+                     WIDTH / 2, HEIGHT / 2, arcade.color.BLACK, font_size=20, anchor_x="center", anchor_y="center")
+
+
+"Falling Apples Game Setup"
+
+
 background = arcade.load_texture('images/background.png')
 
 timer = 0.0
@@ -42,7 +106,7 @@ basket_scale = 0.2
 
 basket_sprite = arcade.Sprite('images/basket.png', basket_scale, center_x=WIDTH/2, center_y=HEIGHT/2)
 
-BASKET_MOVEMENT_SPEED = 50
+BASKET_MOVEMENT_SPEED = 10
 APPLE_MOVEMENT_SPEED = 2
 
 apples_in_trees_list = arcade.SpriteList()
@@ -109,10 +173,21 @@ def apple_falling_speed_increase():
     global APPLE_MOVEMENT_SPEED
     APPLE_MOVEMENT_SPEED += 2
 
+
+def apple_counter():
+    arcade.draw_text(f"Apple Caught: {int(apple_caught_counter)}", 50, 80, arcade.color.BLACK, 30)
+
+
+def game_over():
+    global current_screen
+    current_screen = "game over falling apples"
+    arcade.set_background_color(arcade.color.RED)
+
+
 "Running Game"
 CHARACTER_SCALING = 0.08
 PLAYER_MOVEMENT_SPEED = 5
-apple_Scale = 0.03
+apple_Scale = 0.01
 log_Scale = 0.2
 pond_scale = 0.1
 score = 0
@@ -125,31 +200,37 @@ ponds = arcade.SpriteList()
 
 "Running Game Functions"
 
-def positions():
-    global score
-    for i in range(1):
+
+
+def pond_draw():
+    #for _ in range(1):
         pond = arcade.Sprite('images/water.png', pond_scale)
         pond.center_x = random.randrange(WIDTH)
-        pond.center_y = random.randrange(HEIGHT)
+        pond.center_y = 0
         ponds.append(pond)
+        #pond.draw()
 
-    for i in range(5):
+def log_draw():
+    #for _ in range(5):
         log = arcade.Sprite('images/logs.png', log_Scale)
         log.center_x = random.randrange(WIDTH)
-        log.center_y = random.randrange(HEIGHT)
+        log.center_y = 0
         logs.append(log)
+        #log.draw()
 
-    for i in range(50):
-        apple = arcade.Sprite('images/845418.png', apple_Scale)
+def apple_draw():
+    #for _ in range(50):
+        apple = arcade.Sprite('images/apple1.png', apple_Scale)
         apple.center_x = random.randrange(WIDTH)
-        apple.center_y = random.randrange(HEIGHT)
+        apple.center_y = 0
         apples.append(apple)
-
+        #apple.draw()
 
 def reset(apple):
-    apple.center_y = random.randrange(HEIGHT + 20, HEIGHT + 100)
-    apple.center_x = random.randrange(WIDTH)
-    
+    for _ in range(50):
+        apple.center_y = random.randrange(HEIGHT + 20, HEIGHT + 100)
+        apple.center_x = random.randrange(WIDTH)
+
 
 def draw_game_over():
     global score
@@ -158,63 +239,15 @@ def draw_game_over():
                      arcade.color.BLACK, font_size=30, anchor_x="center")
     arcade.draw_text("You fell into the water and drowned.", WIDTH / 2, HEIGHT / 2 - 60,
                      arcade.color.BLACK, font_size=20, anchor_x="center")
-    arcade.draw_text("Final score: "score"", WIDTH / 2, HEIGHT / 2 - 120,
+    arcade.draw_text(f"Final score: {score}", WIDTH / 2, HEIGHT / 2 - 120,
                      arcade.color.BLACK, font_size=20, anchor_x="center")
 
 
-
-"Menu Functions"
-
-
-def draw_menu():
-    arcade.set_background_color(arcade.color.WHITE_SMOKE)
-
-    if play_button[play_btn_clicked]:
-        color = play_button[play_btn_clicked]
-    else:
-        color = play_button[play_btn_colour]
-
-        # Draw play_button
-    arcade.draw_xywh_rectangle_filled(play_button[play_btn_x],
-                                      play_button[play_btn_y],
-                                      play_button[play_btn_width],
-                                      play_button[play_btn_height],
-                                      color)
-
-    if instruction_button[instruction_btn_clicked]:
-        color = instruction_button[instruction_btn_clicked]
-    else:
-        color = instruction_button[instruction_btn_colour]
-
-        # Draw instruction_button
-    arcade.draw_xywh_rectangle_filled(instruction_button[instruction_btn_x],
-                                      instruction_button[instruction_btn_y],
-                                      instruction_button[instruction_btn_width],
-                                      instruction_button[instruction_btn_height],
-                                      color)
-
-    arcade.draw_text("Main Menu", WIDTH / 2, HEIGHT / 2 + 100,
-                     arcade.color.BLACK, font_size=30, anchor_x="center")
-    arcade.draw_text("Play", WIDTH / 2, HEIGHT / 2 + 15,
-                     arcade.color.BLACK, font_size=20, anchor_x="center")
-    arcade.draw_text("Instructions", WIDTH / 2, HEIGHT / 2 - 85,
-                     arcade.color.BLACK, font_size=20, anchor_x="center")
-
-
-def draw_instructions():
-    arcade.set_background_color(arcade.color.BLUE_GRAY)
-    arcade.draw_text("Instructions", WIDTH/2, HEIGHT/2,
-                     arcade.color.BLACK, font_size=30)
-    arcade.draw_text("ESC to go back", WIDTH/2, HEIGHT/2,
-                     arcade.color.BLACK, font_size=20)
-    arcade.draw_text("Help Little Red Riding Hood collect apples for grandma!
-    1. Use the arrow keys to move left and right.
-    2. Gain points by collecting apples
-    3. Lose points if Little Red Riding Hood runs into a log.
-    4. Little Red Riding hood will drown if she falls into the water, and the game will end.", WIDTH/2+250, HEIGHT/2, arcade.color.Black, font_size=20)
+"The Merging of Level 1 and 2 + Menu"
 
 
 def on_draw():
+    global player_sprite
     arcade.start_render()
     if current_screen == "menu":
         draw_menu()
@@ -224,82 +257,105 @@ def on_draw():
         arcade.draw_texture_rectangle(WIDTH // 2, HEIGHT // 2, WIDTH, HEIGHT, background)
         # Timer on screen
         stopwatch()
-
         # 6 Apples
         for apple in apples_in_trees_list:
             apple.draw()
-
         # Basket
         basket_sprite.draw()
-
         # Apple Caught Counter
-        arcade.draw_text(f"Apple Caught: {int(apple_caught_counter)}", 50, 80, arcade.color.BLACK, 30)
-     elif current_screen == "running_game":
+        apple_counter()
+    elif current_screen == "game over falling apples":
+        game_over()
+    elif current_screen == "running_game":
+        arcade.set_background_color(arcade.color.LIGHT_GREEN)
+        pond_draw()
         ponds.draw()
-        apples.draw()
+        log_draw()
         logs.draw()
+        apple_draw()
+        apples.draw()
         player_sprite.draw()
-        arcade.draw_text(f"Apples Caught: {int(score)}", 50, 80, arcade.color.BLACK, 30)
-     elif current_screen == "game_over":
+        arcade.draw_text(f"Apples Caught: {int(score)}", 50, 600, arcade.color.ANTIQUE_WHITE, 30)
+    elif current_screen == "game_over":
         draw_game_over()
 
 
 def on_key_press(key, modifiers):
-    if current_screen == "menu":
-        if key == arcade.key.I:
-            current_screen = "instructions"
-
+    global current_screen
     if current_screen == "instructions":
-        if key == arcade.key.R:
-            current_screen = "running_game"
-        if key == arcade.key.R:
-            current_screen = "play falling apples game"
+        if key == arcade.key.ESCAPE:
+            current_screen = "menu"
             
-    if current_screen == "play fallings apples game"
-       if key == arcade.key.UP:
-           basket_sprite.change_y = BASKET_MOVEMENT_SPEED
-       elif key == arcade.key.DOWN:
-           basket_sprite.change_y = -BASKET_MOVEMENT_SPEED
-       elif key == arcade.key.LEFT:
-           basket_sprite.change_x = -BASKET_MOVEMENT_SPEED
-       elif key == arcade.key.RIGHT:
-           basket_sprite.change_x = BASKET_MOVEMENT_SPEED
-        
+    if current_screen == "play falling apples game":
+        if key == arcade.key.UP:
+            basket_sprite.change_y = BASKET_MOVEMENT_SPEED
+        elif key == arcade.key.DOWN:
+            basket_sprite.change_y = -BASKET_MOVEMENT_SPEED
+        elif key == arcade.key.LEFT:
+            basket_sprite.change_x = -BASKET_MOVEMENT_SPEED
+        elif key == arcade.key.RIGHT:
+            basket_sprite.change_x = BASKET_MOVEMENT_SPEED
+
+    if current_screen == "game over falling apples":
+        if key == arcade.key.ENTER:
+            current_screen = "running_game"
+
     if current_screen == "running_game":
-       if key == arcade.key.LEFT:
-           player_sprite.change_x = -PLAYER_MOVEMENT_SPEED
-       elif key == arcade.key.RIGHT:
-           player_sprite.change_x = PLAYER_MOVEMENT_SPEED
+        if key == arcade.key.LEFT:
+            player_sprite.change_x = -PLAYER_MOVEMENT_SPEED
+        elif key == arcade.key.RIGHT:
+            player_sprite.change_x = PLAYER_MOVEMENT_SPEED
 
 
 def on_key_release(key, modifiers):
-    if current_screen == "play fallings apples game":
-       if key == arcade.key.UP:
-        basket_sprite.change_y = 0
-    elif key == arcade.key.DOWN:
-        basket_sprite.change_y = 0
-    elif key == arcade.key.LEFT:
-        basket_sprite.change_x = 0
-    elif key == arcade.key.RIGHT:
-        basket_sprite.change_x = 0
+    if current_screen == "play falling apples game":
+        if key == arcade.key.UP:
+            basket_sprite.change_y = 0
+        elif key == arcade.key.DOWN:
+            basket_sprite.change_y = 0
+        elif key == arcade.key.LEFT:
+            basket_sprite.change_x = 0
+        elif key == arcade.key.RIGHT:
+            basket_sprite.change_x = 0
        
     if current_screen == "running_game":
-       if key == arcade.key.LEFT:
-        player_sprite.change_x = 0
-
-    elif key == arcade.key.RIGHT:
-        player_sprite.change_x = 0
+        if key == arcade.key.LEFT:
+            player_sprite.change_x = 0
+        elif key == arcade.key.RIGHT:
+            player_sprite.change_x = 0
    
 
 def on_mouse_press(x, y, button, modifiers):
-    pass
+    global current_screen
+    if current_screen == "menu":
+        # When play_button is clicked
+        if (play_button[play_btn_x] < x < play_button[play_btn_x] + play_button[play_btn_width] and
+                play_button[play_btn_y] < y < play_button[play_btn_y] + play_button[play_btn_height]):
+            play_button[play_btn_clicked] = True
+            current_screen = "play falling apples game"
+        # When instruction_button is clicked
+        if (instruction_button[instruction_btn_x] < x < instruction_button[instruction_btn_x] + instruction_button[instruction_btn_width] and
+                instruction_button[instruction_btn_y] < y < instruction_button[instruction_btn_y] + instruction_button[
+                    instruction_btn_height]):
+            instruction_button[instruction_btn_clicked] = True
+            current_screen = "instructions"
+
+
+def on_mouse_release(x, y, button, modifiers):
+    global current_screen
+    # When you let go of the mouse, all buttons should be set to False.
+    if play_button[play_btn_clicked]:
+        play_button[play_btn_clicked] = False
+
+    if instruction_button[instruction_btn_clicked]:
+        instruction_button[instruction_btn_clicked] = False
 
 
 def update(delta_time):
-     if current_screen == "play falling apples game":
-        global timer
+    global current_screen
+    if current_screen == "play falling apples game":
         basket_sprite.update()
-
+        global timer
         stopwatch()
         timer += delta_time
 
@@ -308,23 +364,25 @@ def update(delta_time):
         if not apples_in_trees_list:
             apple_spawn()
             apple_falling_speed_increase()
-            
-     if current_screen == "running_game":
+        if apple_caught_counter == 1:
+            current_screen = "running_game"
+
+    if current_screen == "running_game":
         player_sprite.update()
-        global score
+        global score, ponds
 
         for pond in ponds:
-            pond.center_y -= 2
+            pond.center_y -= 1
             if pond.top < 0:
                 reset(pond)
 
         for log in logs:
-            log.center_y -= 2
+            log.center_y -= 1
             if log.top < 0:
                 reset(log)
 
         for apple in apples:
-            apple.center_y -= 2
+            apple.center_y -= 1
             if apple.top < 0:
                 reset(apple)
 
@@ -340,9 +398,8 @@ def update(delta_time):
 
         ponds_list = arcade.check_for_collision_with_list(player_sprite, ponds)
         for _ in ponds_list:
-            exit()
+            #exit()
             current_screen = "game_over"
-
 
 
 def setup():
@@ -356,12 +413,14 @@ def setup():
     window.on_key_press = on_key_press
     window.on_key_release = on_key_release
     window.on_mouse_press = on_mouse_press
-    
-    if current_screen == "running_game":
-        positions()
 
-    if current_screen == "play falling apples game"
+    if current_screen == "play falling apples game":
         create_apples()
+
+    # if current_screen == "running_game":
+    #     pond_draw()
+    #     log_draw()
+    #     apple_draw()
     
     arcade.run()
 
