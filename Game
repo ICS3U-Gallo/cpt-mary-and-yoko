@@ -207,6 +207,11 @@ def draw_instructions():
                      arcade.color.BLACK, font_size=30)
     arcade.draw_text("ESC to go back", WIDTH/2, HEIGHT/2,
                      arcade.color.BLACK, font_size=20)
+    arcade.draw_text("Help Little Red Riding Hood collect apples for grandma!
+    1. Use the arrow keys to move left and right.
+    2. Gain points by collecting apples
+    3. Lose points if Little Red Riding Hood runs into a log.
+    4. Little Red Riding hood will drown if she falls into the water, and the game will end.", WIDTH/2+250, HEIGHT/2, arcade.color.Black, font_size=20)
 
 
 def on_draw():
