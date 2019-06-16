@@ -96,8 +96,8 @@ def draw_instructions():
 
 "Falling Apples Game Setup"
 
-if current_screen == "play falling apple game":
-    background = arcade.load_texture('images/background.png')
+
+background = arcade.load_texture('images/background.png')
 
 timer = 0.0
 
@@ -106,7 +106,7 @@ basket_scale = 0.2
 
 basket_sprite = arcade.Sprite('images/basket.png', basket_scale, center_x=WIDTH/2, center_y=HEIGHT/2)
 
-BASKET_MOVEMENT_SPEED = 50
+BASKET_MOVEMENT_SPEED = 10
 APPLE_MOVEMENT_SPEED = 2
 
 apples_in_trees_list = arcade.SpriteList()
@@ -180,14 +180,8 @@ def apple_counter():
 
 def game_over():
     global current_screen
+    current_screen = "game over falling apples"
     arcade.set_background_color(arcade.color.RED)
-    arcade.draw_text("Game Over", WIDTH / 2, HEIGHT / 2,
-                     arcade.color.BLACK, font_size=30, anchor_x="center")
-    arcade.draw_text("You fell into the water and drowned.", WIDTH / 2, HEIGHT / 2 - 60,
-                     arcade.color.BLACK, font_size=20, anchor_x="center")
-    arcade.draw_text(f"Final score: {apple_caught_counter}", WIDTH / 2, HEIGHT / 2 - 120,
-                     arcade.color.BLACK, font_size=20, anchor_x="center")
-    current_screen = "running_game"
 
 
 "Running Game"
@@ -244,6 +238,9 @@ def draw_game_over():
                      arcade.color.BLACK, font_size=20, anchor_x="center")
 
 
+"The Merging of Level 1 and 2 + Menu"
+
+
 def on_draw():
     arcade.start_render()
     if current_screen == "menu":
@@ -261,6 +258,8 @@ def on_draw():
         basket_sprite.draw()
         # Apple Caught Counter
         apple_counter()
+    elif current_screen == "game over falling apples":
+        game_over()
     elif current_screen == "running_game":
         ponds.draw()
         apples.draw()
@@ -273,10 +272,9 @@ def on_draw():
 
 def on_key_press(key, modifiers):
     global current_screen
-    if current_screen == "menu":
-        menu_keybinds(key, modifiers)
-    elif current_screen == "instructions":
-        instructions_keybinds(key, modifiers)
+    if current_screen == "instructions":
+        if key == arcade.key.ESCAPE:
+            current_screen = "menu"
             
     if current_screen == "play falling apples game":
         if key == arcade.key.UP:
@@ -287,6 +285,10 @@ def on_key_press(key, modifiers):
             basket_sprite.change_x = -BASKET_MOVEMENT_SPEED
         elif key == arcade.key.RIGHT:
             basket_sprite.change_x = BASKET_MOVEMENT_SPEED
+
+    if current_screen == "game over falling apples":
+        if key == arcade.key.ENTER:
+            current_screen = "running_game"
 
     if current_screen == "running_game":
         if key == arcade.key.LEFT:
@@ -320,7 +322,7 @@ def on_mouse_press(x, y, button, modifiers):
         if (play_button[play_btn_x] < x < play_button[play_btn_x] + play_button[play_btn_width] and
                 play_button[play_btn_y] < y < play_button[play_btn_y] + play_button[play_btn_height]):
             play_button[play_btn_clicked] = True
-            current_screen = "play falling apple game"
+            current_screen = "play falling apples game"
         # When instruction_button is clicked
         if (instruction_button[instruction_btn_x] < x < instruction_button[instruction_btn_x] + instruction_button[instruction_btn_width] and
                 instruction_button[instruction_btn_y] < y < instruction_button[instruction_btn_y] + instruction_button[
@@ -334,28 +336,9 @@ def on_mouse_release(x, y, button, modifiers):
     # When you let go of the mouse, all buttons should be set to False.
     if play_button[play_btn_clicked]:
         play_button[play_btn_clicked] = False
-        current_screen = "play falling apple game"
 
     if instruction_button[instruction_btn_clicked]:
         instruction_button[instruction_btn_clicked] = False
-
-
-def menu_keybinds(key, modifiers):
-    global current_screen
-    if key == arcade.key.ESCAPE:
-        exit()
-
-
-def instructions_keybinds(key, modifiers):
-    global current_screen
-    if key == arcade.key.ESCAPE:
-        current_screen = "menu"
-
-
-def play_keybinds(key, modifiers):
-    global current_screen
-    if key == arcade.key.ESCAPE:
-        current_screen = "menu"
 
 
 def update(delta_time):
@@ -371,8 +354,8 @@ def update(delta_time):
         if not apples_in_trees_list:
             apple_spawn()
             apple_falling_speed_increase()
-        if apple_caught_counter == 50:
-            game_over()
+        if apple_caught_counter == 3:
+            current_screen = "running_game"
 
     if current_screen == "running_game":
         player_sprite.update()
