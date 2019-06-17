@@ -78,20 +78,6 @@ def draw_instructions():
                      WIDTH / 2, HEIGHT / 2, arcade.color.BLACK, font_size=20, anchor_x="center", anchor_y="center")
 
 
-# If player does not catch 50 apples in 60 seconds, the game is over and this function displays a message
-def falling_apples_game_over():
-    arcade.draw_texture_rectangle(WIDTH // 2, HEIGHT // 2, WIDTH, HEIGHT, background)
-    wolf_sprite.draw()
-    arcade.draw_text('''
-                    Game Over :( 
-                    
-                    You fell into the river and 
-                    drowned. The wolf came and ate you.
-                    
-                    Press ESC to go back.''',
-                     WIDTH / 2 - 100, HEIGHT / 2 + 100, arcade.color.BLACK, font_size=20, anchor_x="center", anchor_y="center")
-
-
 # Set up variables for the second level
 "Running Game"
 
@@ -273,9 +259,6 @@ def setup():
     window.on_key_release = on_key_release
     window.on_mouse_press = on_mouse_press
 
-    if current_screen == "play falling apples game":
-        create_apples()
-    
     arcade.run()
 
 
