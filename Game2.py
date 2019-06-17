@@ -100,8 +100,8 @@ ponds = arcade.SpriteList()
 def pond_draw():
     for i in range(1):
         pond = arcade.Sprite('images/water.png', pond_scale)
-        pond.center_x = random.randint(0, WIDTH)
-        pond.center_y = HEIGHT
+        pond.center_x = random.randrange(WIDTH)
+        pond.center_y = random.randrange(HEIGHT)
         ponds.append(pond)
         #pond.draw()
 
@@ -110,7 +110,7 @@ def log_draw():
     for i in range(5):
         log = arcade.Sprite('images/logs.png', log_Scale)
         log.center_x = random.randrange(WIDTH)
-        log.center_y = HEIGHT
+        log.center_y = random.randrange(HEIGHT)
         logs.append(log)
         #log.draw()
 
@@ -119,14 +119,13 @@ def apple_draw():
     for i in range(50):
         apple = arcade.Sprite('images/apple.jpg', apple_Scale)
         apple.center_x = random.randrange(WIDTH)
-        apple.center_y = HEIGHT
+        apple.center_y = random.randrange(HEIGHT)
         apples.append(apple)
         #apple.draw()
 
 
 # Resets the apple's positions after it goes down the screen
 def reset(apple):
-    for _ in range(50):
         apple.center_y = random.randrange(HEIGHT + 20, HEIGHT + 100)
         apple.center_x = random.randrange(WIDTH)
 
@@ -157,7 +156,6 @@ def draw_success_apple_run():
                      arcade.color.BLACK, font_size=25, align="center", anchor_x="center")
 
 
-
 def on_key_press(key, modifiers):
     global current_screen
     if current_screen == "instructions":
@@ -176,6 +174,7 @@ def instructions_keybinds(key, modifiers):
     if key == arcade.key.ENTER:
         current_screen = "running_game"
 
+        
 def on_key_release(key, modifiers):      
     if current_screen == "running_game":
         if key == arcade.key.LEFT:
