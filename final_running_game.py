@@ -103,7 +103,6 @@ def pond_draw():
         pond.center_x = random.randrange(WIDTH)
         pond.center_y = random.randrange(HEIGHT)
         ponds.append(pond)
-        #pond.draw()
 
 # Sets random positions (x, y coords) for the logs
 def log_draw():
@@ -112,7 +111,6 @@ def log_draw():
         log.center_x = random.randrange(WIDTH)
         log.center_y = random.randrange(HEIGHT)
         logs.append(log)
-        #log.draw()
 
 # Sets random positions (x, y coords) for the apples
 def apple_draw():
@@ -121,7 +119,6 @@ def apple_draw():
         apple.center_x = random.randrange(WIDTH)
         apple.center_y = random.randrange(HEIGHT)
         apples.append(apple)
-        #apple.draw()
 
 
 # Resets the apple's positions after it goes down the screen
@@ -160,8 +157,7 @@ def on_key_press(key, modifiers):
     global current_screen
     if current_screen == "instructions":
         instructions_keybinds(key, modifiers)
-
-    #For level 2 game
+        
     if current_screen == "running_game":
         if key == arcade.key.LEFT:
             player_sprite.change_x = -PLAYER_MOVEMENT_SPEED
@@ -235,7 +231,6 @@ def update(delta_time):
 
         ponds_list = arcade.check_for_collision_with_list(player_sprite, ponds)
         for _ in ponds_list:
-            #exit()
             current_screen = "game_over"
 
         if int(timer) % 60 == 2:
@@ -271,6 +266,7 @@ def on_draw():
     elif current_screen == "instructions":
         draw_instructions()
     if current_screen == "running_game":
+        arcade.start_render()
         arcade.set_background_color(arcade.color.LIGHT_GREEN)
         ponds.draw()
         logs.draw()
